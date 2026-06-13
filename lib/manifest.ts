@@ -78,6 +78,38 @@ export async function getPerkDefinitions(): Promise<Record<string, unknown>> {
   return fetchDefinitionTable("DestinySandboxPerkDefinition")
 }
 
+interface PerkDefinition {
+  index?: number
+  displayProperties?: {
+    name?: string
+    icon?: string
+    description?: string
+  }
+}
+
+export async function buildPerkEntries(): Promise<ManifestEntry[]> {
+  const data = await getPerkDefinitions()
+  const perks: ManifestEntry[] = []
+
+  for (const [hash, rawPerk] of Object.entries(data)) {
+    const perk = rawPerk as PerkDefinition
+    if (!perk.displayProperties?.name || !perk.displayProperties?.icon) continue
+    if (perk.index === undefined) continue
+
+    perks.push({
+      hash: Number(hash),
+      index: perk.index,
+      displayProperties: {
+        name: perk.displayProperties.name,
+        icon: perk.displayProperties.icon,
+        description: perk.displayProperties.description || "",
+      },
+    })
+  }
+
+  return perks.sort((a, b) => a.index - b.index)
+}
+
 export async function buildWeaponEntries(): Promise<WeaponEntry[]> {
   const [items, patterns] = await Promise.all([
     fetchDefinitionTable("DestinyInventoryItemDefinition"),

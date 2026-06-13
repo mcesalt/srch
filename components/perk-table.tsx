@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 
-import { getPerkDefinitions, type ManifestEntry } from "@/lib/manifest"
+import { buildPerkEntries, type ManifestEntry } from "@/lib/manifest"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -13,13 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
-function isValidPerk(perk: ManifestEntry) {
-  return (
-    perk.displayProperties.name.length > 0 &&
-    perk.displayProperties.icon.length > 0
-  )
-}
 
 export function PerkTable() {
   const [perks, setPerks] = useState<ManifestEntry[]>([])
@@ -35,18 +28,7 @@ export function PerkTable() {
       try {
         setLoading(true)
         setError(null)
-        const data = await getPerkDefinitions()
-        const sortedPerks = Object.entries(data)
-          .map(([hash, perk]) => {
-            const entry = perk as Omit<ManifestEntry, "hash">
-            return {
-              hash: Number(hash),
-              index: entry.index,
-              displayProperties: entry.displayProperties,
-            }
-          })
-          .filter((perk) => isValidPerk(perk))
-          .sort((a, b) => a.index - b.index)
+        const sortedPerks = await buildPerkEntries()
 
         if (!cancelled) {
           setPerks(sortedPerks)
