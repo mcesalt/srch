@@ -3,7 +3,9 @@
   "version": "0.0.2",
   "private": true,
   "scripts": {
+    "download-perks": "node scripts/download-perks.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/download-perks.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

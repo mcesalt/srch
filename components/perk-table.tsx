@@ -34,9 +34,12 @@ export function PerkTable() {
           setPerks(sortedPerks)
           setFilteredPerks(sortedPerks)
         }
-      } catch {
+      } catch (loadError) {
         if (!cancelled) {
-          setError("Failed to load perks from the Bungie manifest.")
+          console.error(loadError)
+          setError(
+            "Failed to load perks. Try refreshing the page in a few seconds."
+          )
         }
       } finally {
         if (!cancelled) {

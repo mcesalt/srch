@@ -1,1 +1,1 @@
-export { getPerkDefinitions as getManifest } from "@/lib/manifest"
+export { loadPerkDefinitions as getManifest, buildPerkEntries } from "@/lib/manifest"
